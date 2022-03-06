@@ -32,7 +32,7 @@ class AuthClass(object):
         return f"\nAuthorization credentials:\n{self.user}\n{self.password}\n{self.status}\n{self.code}\n{self.response}"
 
     def get_response(self) -> None:
-        url = f"https://www.alarstudios.com/test/auth.cgi"
+        url = "https://www.alarstudios.com/test/auth.cgi"
         headers = {"Accept": "application/json"}
         payload = {"username": self._user, "password": self._password}
 
