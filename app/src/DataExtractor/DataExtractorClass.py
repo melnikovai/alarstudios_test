@@ -1,13 +1,18 @@
 import os
+import sys
 import math
 import json
 import requests
 from datetime import datetime
+from Auth.AuthClass import AuthClass
+
+sys.path.append("..")
 
 
 class DataExtractorClass(object):
-    def __init__(self, logger, auth_code: str = None, pages_to_scan: int = -1, default: bool = False):
+    def __init__(self, logger, auth_client: AuthClass, pages_to_scan: int = -1, default: bool = False):
         self.logger = logger
+        self._auth_client = auth_client
 
         if pages_to_scan < 0:
             self._pages_to_scan = math.inf
@@ -16,13 +21,10 @@ class DataExtractorClass(object):
         else:
             self._pages_to_scan = pages_to_scan
 
-        if auth_code:
-            self._auth_code = auth_code
+        if default:
+            self._auth_code = "3491024292"
         else:
-            if default:
-                self._auth_code = "3491024292"
-            else:
-                raise "No Authorization code has been specified! Aborting..."
+            self._auth_code = self._auth_client.get_response()
 
     @property
     def auth_code(self): return self._auth_code
