@@ -6,6 +6,7 @@ from Auth.AuthClass import AuthClass
 from Connector.PGConnectorClass import PGConnectorClass
 from DataExtractor.DataExtractorClass import DataExtractorClass
 from DataTransformer.DataTransformerClass import DataTransformerClass
+from FlightsGenerator.FlightsGeneratorClass import FlightsGeneratorClass
 from ScheduleGenerator.ScheduleGeneratorClass import ScheduleGeneratorClass
 
 
@@ -30,13 +31,16 @@ def main():
     #auth = AuthClass(logger, user, password)
     #extractor = DataExtractorClass(logger=logger, auth_client=auth, pages_to_scan=-1, default=False)
     #transformer = DataTransformerClass(logger=logger, db=db)
-    schedule = ScheduleGeneratorClass(logger=logger)
+    #schedule = ScheduleGeneratorClass(logger=logger)
     try:
         #extractor.extract(staging_path="/app/staging")
         #transformer.transform(staging_path="/app/staging", data_path="/app/raw")
         #db.close()
-        schedule.load("/app/raw")
-        schedule.generate("/app/schedule")
+        #schedule.load("/app/raw")
+        #schedule.generate("/app/schedule")
+        flights = FlightsGeneratorClass(logger=logger, generate_months=3)
+        flights.load("/app/schedule")
+        flights.generate("/app/flights")
     except Exception as e:
         logger.exception(str(e))
 
