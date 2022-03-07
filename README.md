@@ -3,6 +3,8 @@ Test for Alar Studios DB developer
 
 
 Для запуска
+
+
 docker-compose up --build -d
 
 

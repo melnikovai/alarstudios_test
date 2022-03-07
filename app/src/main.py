@@ -6,6 +6,7 @@ from Auth.AuthClass import AuthClass
 from Connector.PGConnectorClass import PGConnectorClass
 from DataExtractor.DataExtractorClass import DataExtractorClass
 from DataTransformer.DataTransformerClass import DataTransformerClass
+from ScheduleGenerator.ScheduleGeneratorClass import ScheduleGeneratorClass
 
 
 def main():
@@ -24,15 +25,18 @@ def main():
 
     logger.info("Logger has been initiated")
 
-    db = PGConnectorClass(logger=logger)
-    db.connect(host="db", port=5432, user="postgres", password=pg_password, db="alardb")
+    #db = PGConnectorClass(logger=logger)
+    #db.connect(host="db", port=5432, user="postgres", password=pg_password, db="alardb")
     #auth = AuthClass(logger, user, password)
     #extractor = DataExtractorClass(logger=logger, auth_client=auth, pages_to_scan=-1, default=False)
-    transformer = DataTransformerClass(logger=logger, db=db)
+    #transformer = DataTransformerClass(logger=logger, db=db)
+    schedule = ScheduleGeneratorClass(logger=logger)
     try:
         #extractor.extract(staging_path="/app/staging")
-        transformer.transform(staging_path="/app/staging", data_path="/app/raw")
-        db.close()
+        #transformer.transform(staging_path="/app/staging", data_path="/app/raw")
+        #db.close()
+        schedule.load("/app/raw")
+        schedule.generate("/app/schedule")
     except Exception as e:
         logger.exception(str(e))
 
