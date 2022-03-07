@@ -31,7 +31,7 @@ class AuthClass(object):
     def __str__(self) -> str:
         return f"\nAuthorization credentials:\n{self.user}\n{self.password}\n{self.status}\n{self.code}\n{self.response}"
 
-    def get_response(self) -> None:
+    def get_response(self) -> str:
         url = "https://www.alarstudios.com/test/auth.cgi"
         headers = {"Accept": "application/json"}
         payload = {"username": self._user, "password": self._password}
@@ -57,4 +57,4 @@ class AuthClass(object):
         except KeyError as ke:
             self.logger.warning(str(ke))
 
-        return None
+        return self.code

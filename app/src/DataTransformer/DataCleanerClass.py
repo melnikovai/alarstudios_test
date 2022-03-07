@@ -1,0 +1,2 @@
+class DataCleanerClass(object):
+    pass

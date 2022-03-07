@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  alar-app:
+    container_name: alar_container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    stdin_open: true
+    tty: true
+    ports:
+        - 5000:5000
+    working_dir: /app
+    volumes:
+      - ./app:/app
+    #network_mode: host
+    links:
+      - db
+
+  db:
+    container_name: pgdb
+    image: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - ./migrations/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - ./pg_data:/var/lib/postgresql/pg_data
+    environment:
+      - POSTGRES_DB=alardb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
