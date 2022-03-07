@@ -1,3 +1,5 @@
+import typing
+
 import psycopg2
 
 
@@ -43,4 +45,6 @@ class PGConnectorClass(object):
 
     def fetchall(self):
         return self.cursor.fetchall()
+
+
 

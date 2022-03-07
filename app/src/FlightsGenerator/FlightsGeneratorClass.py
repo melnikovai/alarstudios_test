@@ -49,7 +49,7 @@ class FlightsGeneratorClass(object):
             self.logger.info(f"Day: {k} - Number of flights: {len(v)}")
         return None
 
-    def generate(self, target_path: str) -> None:
+    def generate(self, target_path: str) -> str:
         current_ts = datetime.now().strftime("%Y-%m-%dT%H%M%S")
         filename = f"flights_{current_ts}.csv"
         filepath = os.path.join(target_path, filename)
@@ -208,7 +208,8 @@ class FlightsGeneratorClass(object):
                         arrival_date = dt
                     writer.writerow([flight[0], 'departure', departure_date.date(), departure_time.time().strftime("%H:%M")])
                     writer.writerow([flight[0], 'arrival', arrival_date.date(), arrival_time.time().strftime("%H:%M")])
-
+        self.logger.info(f"Generated flights have been successfully writen into {filepath}")
+        return filepath
 
 
 

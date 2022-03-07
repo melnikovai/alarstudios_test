@@ -73,7 +73,7 @@ class ScheduleGeneratorClass(object):
                     break
         return off_block_time
 
-    def generate(self, target_path):
+    def generate(self, target_path) -> str:
         current_ts = datetime.now().strftime("%Y-%m-%dT%H%M%S")
         filename = f"flight_schedule_{current_ts}.csv"
         filepath = os.path.join(target_path, filename)
@@ -111,5 +111,6 @@ class ScheduleGeneratorClass(object):
                     self.flight_number += 1
                     writer.writerow(flight_unit.values())
         self.logger.info(f"Flight Schedule has been successfully generated into {filepath}")
+        return filepath
 
 
