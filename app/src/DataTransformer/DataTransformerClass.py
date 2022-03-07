@@ -71,7 +71,7 @@ class DataTransformerClass(object):
 
         return None
 
-    def transform(self, staging_path: str, data_path: str) -> None:
+    def transform(self, staging_path: str, data_path: str) -> str:
         self._staging_path = staging_path
         self._data_path = data_path
         self._files = [filenames for dirpath, dirnames, filenames in walk(self._staging_path)]
@@ -91,6 +91,6 @@ class DataTransformerClass(object):
                         except ValueError:
                             self.logger.warning(f"Can not decode line: {line}")
                     self.logger.info(f"All records from STAGING have been loaded to {filepath_out}")
-        return None
+        return filepath_out
 
 
