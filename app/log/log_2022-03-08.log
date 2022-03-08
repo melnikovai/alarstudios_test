@@ -1,0 +1,4 @@
+2022-03-08 15:36:06,448 INFO Logger has been initiated
+2022-03-08 15:36:06,452 INFO Connection has been initiated!
+2022-03-08 15:36:06,452 INFO Executing query SET search_path TO alar
+2022-03-08 15:36:06,455 DEBUG Starting new HTTPS connection (1): www.alarstudios.com:443
