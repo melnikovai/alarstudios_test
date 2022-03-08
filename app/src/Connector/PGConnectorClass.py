@@ -4,6 +4,9 @@ import psycopg2
 
 
 class PGConnectorClass(object):
+    """
+    Simple class to handle DB. Based on psycopg2
+    """
     def __init__(self, logger):
         self.logger = logger
         self._host = None

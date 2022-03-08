@@ -26,6 +26,11 @@ class ScheduleGeneratorClass(object):
         self.flight_number = 1000
 
     def load(self, data_path: str) -> None:
+        """
+        Loads data of airports ids and its coordinates into the RAM
+        :param data_path:
+        :return:
+        """
         self._files = [filenames for dirpath, dirnames, filenames in os.walk(data_path)]
         for filename in self._files[0]:
             filepath = os.path.join(data_path, filename)
@@ -37,6 +42,11 @@ class ScheduleGeneratorClass(object):
         self.logger.info("List of airports has been successfully uploaded to RAM")
 
     def _schedule(self) -> str:
+        """
+        Generates weekly schedule randomly. At least 1 flight in a week is always provided
+        :return: week schedule
+        :type: str
+        """
         week_days = list("MTWTFSS")
         schedule = []
         for d in week_days:
@@ -47,10 +57,24 @@ class ScheduleGeneratorClass(object):
         return "".join(schedule)
 
     def calculate_time(self, distance: float, aircraft_type: str) -> int:
+        """
+        Calculates time of trip based on distance and velocity
+        :param distance:
+        :param aircraft_type:
+        :return:
+        """
         t = distance * 1000 / (self.aircraft_types[aircraft_type] * self.knots2ms * 60)  # min
         return int(t)
 
     def off_block_time(self, off_block_buffer: list) -> datetime:
+        """
+        Tricky part. One of te conditions, that it has to be at least 30 min between flights.
+        That means we have to check off block time every time we produce new value
+        Implemented solution based on buffer for generated dates and check provided constraint
+        :param off_block_buffer: list of already generated times
+        :return: no conflict time to take off
+        :type: datetime
+        """
         off_block_time = None
         off_block_tmp = datetime(2022, 3, 7, random.randint(17, 23), random.randint(0, 59), 0)
         if len(off_block_buffer) == 0:
@@ -74,6 +98,15 @@ class ScheduleGeneratorClass(object):
         return off_block_time
 
     def generate(self, target_path) -> str:
+        """
+        Generates schedule. flight number is generated incrementally.
+        Logic:
+        We iterate by airports one by one. For each airport we get randoly from 3 to 7 destination airports
+        that we get from the same list with airports by calling values directly by randomly generated index
+        Distance we calculate with geopy package based on lat and long of origin/destination airports
+        :param target_path: path to the file to store the schedule
+        :return: path to the generated file
+        """
         current_ts = datetime.now().strftime("%Y-%m-%dT%H%M%S")
         filename = f"flight_schedule_{current_ts}.csv"
         filepath = os.path.join(target_path, filename)

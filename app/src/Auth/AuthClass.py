@@ -2,7 +2,17 @@ import requests
 
 
 class AuthClass(object):
+    """
+    Gets authorization code for main client.
+    Sens HTTP request and returns code
+    """
     def __init__(self, logger, user=None, password=None):
+        """
+        Constructor
+        :param logger: simple logger
+        :param user: username
+        :param password: password
+        """
         self.logger = logger
         self._user = user
         self._password = password
@@ -32,6 +42,11 @@ class AuthClass(object):
         return f"\nAuthorization credentials:\n{self.user}\n{self.password}\n{self.status}\n{self.code}\n{self.response}"
 
     def get_response(self) -> str:
+        """
+        Sends HTTP request on server. URL is hardcoded, but can be configured on config.cfg
+        :return: code
+        :type: str
+        """
         url = "https://www.alarstudios.com/test/auth.cgi"
         headers = {"Accept": "application/json"}
         payload = {"username": self._user, "password": self._password}

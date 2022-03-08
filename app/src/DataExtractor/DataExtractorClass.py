@@ -10,7 +10,21 @@ sys.path.append("..")
 
 
 class DataExtractorClass(object):
+    """
+    Handles extraction step.
+    Logic: gets auth code from AuthClass, builds HTTP requests for each page and extracts to staging area
+    """
     def __init__(self, logger, auth_client: AuthClass, pages_to_scan: int = -1, default: bool = False):
+        """
+        Constructor. Class can take user-specified number of pages to download. If no pages provided
+        amth.inf value passed as default value for scan
+        :param logger: simple logger
+        :param auth_client: authorization class
+        :param pages_to_scan: number of pages to download, INF if no value provided
+        :type: int
+        :param default: debug param with static code
+        :type: bool
+        """
         self.logger = logger
         self._auth_client = auth_client
 
@@ -33,6 +47,14 @@ class DataExtractorClass(object):
     def pages_to_scan(self): return self._pages_to_scan
 
     def extract(self, staging_path: str) -> None:
+        """
+        Extracts data from server. File masks are hardcoded but could be configured from config
+        Stores data in text format for utility
+        Simple HTTP request under hood
+        :param staging_path: path to dir to store data
+        :type: str
+        :return: None
+        """
         current_ts = datetime.now().strftime("%Y-%m-%dT%H%M%S")
 
         success_filename = f"success_staging_{current_ts}.txt"

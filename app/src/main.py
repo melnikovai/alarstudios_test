@@ -1,3 +1,4 @@
+import csv
 import logging
 from os import environ
 from datetime import datetime
@@ -5,6 +6,7 @@ from datetime import datetime
 from Auth.AuthClass import AuthClass
 from Connector.PGConnectorClass import PGConnectorClass
 from DataExtractor.DataExtractorClass import DataExtractorClass
+from ReportGenerator.ReportGeneratorClass import ReportGeneratorClass
 from DataTransformer.DataTransformerClass import DataTransformerClass
 from FlightsGenerator.FlightsGeneratorClass import FlightsGeneratorClass
 from ScheduleGenerator.ScheduleGeneratorClass import ScheduleGeneratorClass
@@ -33,6 +35,7 @@ def main():
     extractor = DataExtractorClass(logger=logger, auth_client=auth, pages_to_scan=-1, default=False)
     transformer = DataTransformerClass(logger=logger, db=db)
     schedule = ScheduleGeneratorClass(logger=logger)
+    reporter = ReportGeneratorClass(logger=logger, db=db)
     try:
         extractor.extract(staging_path="/app/staging")
 
@@ -81,6 +84,9 @@ def main():
         )
         db.connection.commit()
         logger.info("Flight Dataset have been successfully replicated to DB")
+
+        reporter.execute("/app/sql", "/app/reports")
+
     except Exception as e:
         logger.exception(str(e))
     finally:
