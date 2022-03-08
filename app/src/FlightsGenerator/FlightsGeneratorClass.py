@@ -8,6 +8,10 @@ from dateutil.relativedelta import relativedelta
 
 
 class FlightsGeneratorClass(object):
+    """
+    Class for flights report generation
+    self.flights_by_day contains list of all flights tha are scheduled for certain day of week
+    """
     def __init__(self, logger, generate_months: int):
         self.logger = logger
         self._generate_months = generate_months
@@ -32,6 +36,12 @@ class FlightsGeneratorClass(object):
         self.movement_type = ("arrival", "departure")
 
     def load(self, schedule_path: str) -> None:
+        """
+        Entry point. Wrapper around files iterator in dir and csv writer
+        Populates self.flights_by_day by reading schedule file
+        :param schedule_path: path to schedule file
+        :return:
+        """
         self._schedule_path = schedule_path
         self._files = [filenames for dirpath, dirnames, filenames in os.walk(self._schedule_path)]
         for filename in self._files[0]:
@@ -50,6 +60,18 @@ class FlightsGeneratorClass(object):
         return None
 
     def generate(self, target_path: str) -> str:
+        """
+        Messed up function, sorry. But logic of generation as simple as possible.
+        First, calculate dates range for report with build-in datetime class
+        Second, we find name of the calculated day and copy from self.flights_by_day list of all flights in this day
+        Third, we build separate lists of flights - flights that late for departure and arrival, flights that
+        late for arrival because of strong wing, flights that early etc
+        Basic instrument for building report - pop method of list
+        Fourth, we generate  random fluctuations of time in flights schedule. Tricky part - watch out for day change
+        when we add us some delta - 2020-01-01 23:55 + 20 min -> 2020-01-02 00:15. Conditions messy and stupid, but work
+        :param target_path: path to store data
+        :return: path to the formed file
+        """
         current_ts = datetime.now().strftime("%Y-%m-%dT%H%M%S")
         filename = f"flights_{current_ts}.csv"
         filepath = os.path.join(target_path, filename)

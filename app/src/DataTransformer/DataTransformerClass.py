@@ -13,7 +13,17 @@ sys.path.append("..")
 
 
 class DataTransformerClass(object):
+    """
+    Transformer is required for cleaning the data befor replicating it to DB
+    """
     def __init__(self, logger, db: PGConnectorClass) -> None:
+        """
+        Constructor.
+        self._continents placed for getting first letter of airport code
+        exceptions are made for specific airports that need to transform
+        :param logger: logger
+        :param db: PGConnectorClass
+        """
         self.logger = logger
         self.db = db
         self._staging_path = None
@@ -38,11 +48,24 @@ class DataTransformerClass(object):
     def files(self) -> list: return self._files
 
     def find_coordinates_by_id(self, airport_id) -> tuple:
+        """
+        Dataset has gaps on some values, that nowhere else to find.
+        To avoid misses I download external dictionary of all airports and pre-downloaded it in DB
+        Function searches missing fields (log/lat) by airport id if no data found in dataset
+        :param airport_id: 4 symbol code of airport
+        :return: airport's coordinates
+        """
         self.db.execute("select coordinates from alar.airports_dict where airport_id = %s", (airport_id,))
         data = self.db.fetchall()
         return eval(data[0][0])
 
     def _cleared_lines_transformer(self, writer, line: str) -> None:
+        """
+        Writes text string to the CSV file
+        :param writer: CSV writer
+        :param line: text string
+        :return:
+        """
         line_json = json.loads(line)
         records = line_json["data"]
 
@@ -58,6 +81,13 @@ class DataTransformerClass(object):
         return None
 
     def _transform_lines(self, writer, line: str) -> None:
+        """
+        Clears text string from staging dir by regular expressions line by line
+        and then sends it for writer function
+        :param writer: CSV writer
+        :param line: text string
+        :return:
+        """
         if re.findall(r'(?<=[a-zA-Z\)\s]),\"', line):
             line = re.sub(r'(?<=[a-zA-Z\)\s]),\"', '\",\"', line)
         if re.findall(r'\":\s', line):
@@ -72,6 +102,13 @@ class DataTransformerClass(object):
         return None
 
     def transform(self, staging_path: str, data_path: str) -> str:
+        """
+        Entry point. Wrapper around files iterator, cleaner and writer
+        Files masks are hardcoded but can be configured from config file
+        :param staging_path: path to the staging dir
+        :param data_path: path to store cleared data
+        :return: path to the file with cleared data
+        """
         self._staging_path = staging_path
         self._data_path = data_path
         self._files = [filenames for dirpath, dirnames, filenames in walk(self._staging_path)]
